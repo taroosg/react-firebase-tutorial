@@ -4,14 +4,20 @@
 
 更新日：2020/05/20
 
+## 今回の講座のゴール
+- ReactとCloud Firestoreを用いて動的なアプリケーションを構築する．
+- ReactでのCRUD処理の基本を理解する．
+
+
 ## 今回作成するアプリケーション
 
 - ReactとCloud Firestoreを用いたtodoリスト．
 - 入力フォームから登録内容を送信．
-- 保存されている内容を一覧表示し，更新と削除を行えるようにする．
+- 保存されている内容を一覧表示し，更新（完了未完了）と削除を行えるようにする．
+- 完了した項目はリスト下部に移動させ，取り消し線で表示する．
 
 
-## 事前準備
+## 【必須】事前準備
 
 - `https://console.firebase.google.com/`にアクセスし，`react-firebase`という名前でFirebaseのプロジェクトを新規作成する．
 - DatabaseタブからCloud Firestoreのデータベースを作成する(必ずテストモードで開始しておく．ロケーションは`us-central`のままでOK)．
@@ -28,9 +34,11 @@ Cloud Firestoreのコンソール画面で下のように表示されていれ�
 
 ## 今回の内容の前提
 
+オンライン講座と課題を完了していればOK！
+
 - Reactを用いた基礎的な実装を行った経験がある．
 - React Hooksを用いた実装の経験がある．
-- component，propsなどの意味を把握している．
+- component，propsなどの意味，配列の基本的な処理を把握している．
 
 
 ## 環境構築
@@ -126,7 +134,8 @@ $ npm start
 - `src`ディレクトリに`firebase`ディレクトリを作成する．
 - `firebase`ディレクトリに`config.js`と`index.js`を作成する．
 - それぞれ，以下のように編集する（APIキーなどの情報は各自のものを入力する）．これらのファイルがfirebaseと連携するための設定ファイルとなる．
-- 事前準備で作成した`react-firebase`プロジェクトの情報を参照しよう（⚙ -> プロジェクトの設定 -> webアプリを設定）．
+- 事前準備で作成した`react-firebase`プロジェクトの情報を参照しよう（⚙ -> プロジェクトを設定 -> マイアプリ -> web）．
+- ニックネームは適当（プロジェクト名と同じなど）でOK．表示されたAPIキーなどを`config.js`に記述する．
 
 ```js
 // config.js
@@ -221,6 +230,23 @@ export default ItemList;
 - Firestore関連の関数（`get()`など）はPromiseを返すので，`async/await`を用いると見通しが良い．
 - 取得したFirestoreのデータはそのままだと扱いにくいので，`map()`関数を用いて必要なデータだけを抽出している．
 
+呼び出し元の`App.jsx`を以下のように編集し，`ItemList.jsx`を表示する．
+
+```js
+// App.jsx
+import React from 'react';
+import ItemList from './components/ItemList';
+
+const App = () => {
+  return (
+    <div>
+      <h1>React-Firebase Todo App</h1>
+      <ItemList />
+    </div>
+  );
+}
+export default App;
+```
 
 下記のように，事前準備で登録したデータが表示されればOK！
 
@@ -577,6 +603,8 @@ export default Item;
 
 ブラウザで確認し，チェック済みのtodoが取り消し線表示になっていればOK．
 
+![メイン画面6](./images/mainview06.png)
+
 続いて，表示順を制御する．
 
 - `Item.jsx`の一覧取得関数（`getTodosFromFirestore()`）を編集する．
@@ -628,7 +656,7 @@ export default Item;
 
 完了済みtodoが未完了todoのあとに表示され，取り消し線になっていればOK．
 
-![メイン画面6](./images/mainview06.png)
+![メイン画面7](./images/mainview07.png)
 
 
 ## やってみよう！！
