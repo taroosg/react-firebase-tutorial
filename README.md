@@ -494,7 +494,7 @@ const Item = ({ index, todo, getTodosFromFirestore }) => {
 
   // ↓追加 ドキュメントIDを指定してFirestoreのデータを更新する関数
   const updateDataOnFirestore = async (collectionName, documentId, isDone) => {
-    const removedData = await firebase.firestore()
+    const updatedData = await firebase.firestore()
       .collection(collectionName)
       .doc(documentId)
       .update({
