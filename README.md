@@ -65,7 +65,7 @@ $ npx create-react-app react-firebase
 いい感じにできたら，以下のコマンドでディレクトリに移動し，サーバを起動する．
 
 ```bash
-$ cd react-app
+$ cd react-firebase
 $ npm start
 ```
 
