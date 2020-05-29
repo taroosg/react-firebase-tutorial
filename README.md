@@ -612,7 +612,7 @@ export default Item;
 
 続いて，表示順を制御する．
 
-- `Item.jsx`の一覧取得関数（`getTodosFromFirestore()`）を編集する．
+- `ItemList.jsx`の一覧取得関数（`getTodosFromFirestore()`）を編集する．
 - `.orderBy()`を追加し，`isDone`のパラメータで並び替えできるようにする．
 
 ```js
