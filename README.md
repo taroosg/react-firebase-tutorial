@@ -130,6 +130,16 @@ $ npm start
 ブラウザ画面を確認すると以下のようになっている．
 ![メイン画面1](./images/mainview01.png)
 
+## Firebaseモジュールの準備
+
+- 以下のコマンドを実行し，Firebase用のモジュールを準備する．
+
+```bash
+$ npm install firebase
+```
+
+エラーなどでなければOK！
+
 ## Firebaseの設定
 
 - `src`ディレクトリに`firebase`ディレクトリを作成する．
