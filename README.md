@@ -152,7 +152,7 @@ export const firebaseConfig = {
 ```
 
 ```js
-// firebase.js
+// index.js
 import firebase from 'firebase';
 import { firebaseConfig } from './config';
 
