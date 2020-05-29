@@ -202,16 +202,14 @@ const ItemList = props => {
     <div>
       <ul>
         {
-          !todoList
-            ? ''
-            : todoList.map((x, index) =>
-              <li key={index} id={x.id}>
-                <input type="checkbox" value={x.id} />
-                <button value={x.id}>delete</button>
-                <p>締め切り：{x.data.limit.seconds}</p>
-                <p>やること：{x.data.todo}</p>
-              </li>
-            )
+          todoList?.map((x, index) =>
+            <li key={index} id={x.id}>
+              <input type="checkbox" value={x.id} />
+              <button value={x.id}>delete</button>
+              <p>締め切り：{x.data.limit.seconds}</p>
+              <p>やること：{x.data.todo}</p>
+            </li>
+          )
         }
       </ul>
     </div>
@@ -349,16 +347,14 @@ const ItemList = props => {
       {/* 以下変更なし */}
       <ul>
         {
-          !todoList
-            ? ''
-            : todoList.map((x, index) =>
-              <li key={index} id={x.id}>
-                <input type="checkbox" value={x.id} />
-                <button value={x.id}>delete</button>
-                <p>締め切り：{x.data.limit.seconds}</p>
-                <p>やること：{x.data.todo}</p>
-              </li>
-            )
+          todoList?.map((x, index) =>
+            <li key={index} id={x.id}>
+              <input type="checkbox" value={x.id} />
+              <button value={x.id}>delete</button>
+              <p>締め切り：{x.data.limit.seconds}</p>
+              <p>やること：{x.data.todo}</p>
+            </li>
+          )
         }
       </ul>
     </div>
@@ -438,24 +434,22 @@ const ItemList = props => {
       {/* ↓↓↓ 編集 ↓↓↓ */}
       <ul>
         {
-          !todoList
-            ? ''
-            : todoList.map((x, index) =>
-              // ↓新しく作成した`Item.jsx`
-              <Item
-                key={index}
-                todo={x}
-                index={index}
-                getTodosFromFirestore={getTodosFromFirestore}
-              />
-              // ↓直接記述したものは削除してOK．
-              // <li key={index} id={x.id}>
-              //   <input type="checkbox" value={x.id} />
-              //   <button value={x.id}>delete</button>
-              //   <p>締め切り：{x.data.limit.seconds}</p>
-              //   <p>やること：{x.data.todo}</p>
-              // </li>
-            )
+          todoList?.map((x, index) =>
+            // ↓新しく作成した`Item.jsx`
+            <Item
+              key={index}
+              todo={x}
+              index={index}
+              getTodosFromFirestore={getTodosFromFirestore}
+            />
+            // ↓直接記述したものは削除してOK．
+            // <li key={index} id={x.id}>
+            //   <input type="checkbox" value={x.id} />
+            //   <button value={x.id}>delete</button>
+            //   <p>締め切り：{x.data.limit.seconds}</p>
+            //   <p>やること：{x.data.todo}</p>
+            // </li>
+          )
         }
       </ul>
     </div>
