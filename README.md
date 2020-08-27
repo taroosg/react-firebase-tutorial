@@ -2,59 +2,59 @@
 
 作成日：2020/05/20
 
-更新日：2020/05/29
+更新日：2020/08/27
 
 ## 今回の講座のゴール
-- ReactとCloud Firestoreを用いた動的なアプリケーションが手元のある状態．
-- 何やってるかをできる限り自分の言葉でコメントする．
-- ReactとCloud Firestoreを使ってなにか作れそうな感覚を得る．
 
+- React と Cloud Firestore を用いた動的なアプリケーションが手元のある状態．
+- 何やってるかをできる限り自分の言葉でコメントする．
+- React と Cloud Firestore を使ってなにか作れそうな感覚を得る．
 
 ## 今回作成するアプリケーション
 
-- ReactとCloud Firestoreを用いたtodoリスト．
+- React と Cloud Firestore を用いた todo リスト．
 - 入力フォームから登録内容を送信．
 - 保存されている内容を一覧表示し，更新（完了未完了）と削除を行えるようにする．
 - 完了した項目はリスト下部に移動させ，取り消し線で表示する．
 
-
 ## 【必須】事前準備
 
-- `https://console.firebase.google.com/`にアクセスし，`react-firebase`という名前でFirebaseのプロジェクトを新規作成する．
-- DatabaseタブからCloud Firestoreのデータベースを作成する(必ずテストモードで開始しておく．ロケーションは`us-central`のままでOK)．
-．
+- `https://console.firebase.google.com/`にアクセスし，`react-firebase`という名前で Firebase のプロジェクトを新規作成する．
+- Database タブから Cloud Firestore のデータベースを作成する(必ずテストモードで開始しておく．ロケーションは`us-central`のままで OK)．
+  ．
 - `todos`という名前でコレクションを作成する．
-  - IDは自動ID．
-  - フィールドは`todo`（string），`isDone`（boolean），`limit`（timestamp）の3つを作成．
+  - ID は自動 ID．
+  - フィールドは`todo`（string），`isDone`（boolean），`limit`（timestamp）の 3 つを作成．
   - 値は`isDone`のみ`false`であとは適当で問題なし．
 
-Cloud Firestoreのコンソール画面で下のように表示されていればOK．
+Cloud Firestore のコンソール画面で下のように表示されていれば OK．
 
 ![CloudFirestore画面01](./images/firestore01.png)
 
-
 ## 今回の内容の前提
 
-オンライン講座と課題を完了していればOK！
+オンライン講座と課題を完了していれば OK！
 
-- Reactを用いた基礎的な実装を行った経験がある．
-- React Hooksを用いた実装の経験がある．
-- component，propsなどの意味，配列の基本的な処理を把握している．
-
+- React を用いた基礎的な実装を行った経験がある．
+- React Hooks を用いた実装の経験がある．
+- component，props などの意味，配列の基本的な処理を把握している．
 
 ## 環境構築
 
 ### 必要なツールのバージョン確認
-- Node.jsとnpmが必要なので，以下のコマンドで状況を確認する．
-- バージョンが表示されればOK．
+
+- Node.js と npm が必要なので，以下のコマンドで状況を確認する．
+- バージョンが表示されれば OK．
+
 ```bash
 $ node -v
-v12.15.0
+v14.8.0
 $ npm -v
-6.14.5
+6.14.7
 ```
 
 ### プロジェクトの作成
+
 - 今回は`react-firebase`という名前でプロジェクトを作成する．
 
 ```bash
@@ -70,7 +70,7 @@ $ cd react-firebase
 $ npm start
 ```
 
-自動的にブラウザが立ち上がり，以下のような画面が表示されればOK．
+自動的にブラウザが立ち上がり，以下のような画面が表示されれば OK．
 
 ![初期画面の画像](./images/firstview.png)
 
@@ -84,7 +84,7 @@ $ npm start
 
 ```jsx
 // App.jsx
-import React from 'react';
+import React from "react";
 
 const App = () => {
   return (
@@ -92,11 +92,12 @@ const App = () => {
       <h1>React-Firebase Todo App</h1>
     </div>
   );
-}
+};
 export default App;
 ```
 
 以下のファイルを削除する．
+
 - `src/App.css`
 - `src/index.css`
 - `src/App.test.js`
@@ -106,16 +107,16 @@ export default App;
 
 ```js
 // index.js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 serviceWorker.unregister();
@@ -130,23 +131,23 @@ $ npm start
 ブラウザ画面を確認すると以下のようになっている．
 ![メイン画面1](./images/mainview01.png)
 
-## Firebaseモジュールの準備
+## Firebase モジュールの準備
 
-- 以下のコマンドを実行し，Firebase用のモジュールを準備する．
+- 以下のコマンドを実行し，Firebase 用のモジュールを準備する．
 
 ```bash
 $ npm install firebase
 ```
 
-エラーなどでなければOK！
+エラーなどでなければ OK！
 
-## Firebaseの設定
+## Firebase の設定
 
 - `src`ディレクトリに`firebase`ディレクトリを作成する．
 - `firebase`ディレクトリに`config.js`と`index.js`を作成する．
-- それぞれ，以下のように編集する（APIキーなどの情報は各自のものを入力する）．これらのファイルがfirebaseと連携するための設定ファイルとなる．
+- それぞれ，以下のように編集する（API キーなどの情報は各自のものを入力する）．これらのファイルが firebase と連携するための設定ファイルとなる．
 - 事前準備で作成した`react-firebase`プロジェクトの情報を参照しよう（⚙ -> プロジェクトを設定 -> マイアプリ -> web）．
-- ニックネームは適当（プロジェクト名と同じなど）でOK．表示されたAPIキーなどを`config.js`に記述する．
+- ニックネームは適当（プロジェクト名と同じなど）で OK．表示された API キーなどを`config.js`に記述する．
 
 ```js
 // config.js
@@ -163,8 +164,8 @@ export const firebaseConfig = {
 
 ```js
 // index.js
-import firebase from 'firebase';
-import { firebaseConfig } from './config';
+import firebase from "firebase";
+import { firebaseConfig } from "./config";
 
 export const firebaseApp = firebase.initializeApp(firebaseConfig);
 
@@ -173,7 +174,7 @@ export default firebase;
 
 ## データ一覧コンポーネントの実装
 
-ここから，実際にFirestoreのデータを表示するコンポーネントを実装する．
+ここから，実際に Firestore のデータを表示するコンポーネントを実装する．
 
 - `src`ディレクトリに`components`ディレクトリを作成する．
 - `components`ディレクトリ内に`ItemList.jsx`を作成する．
@@ -181,70 +182,70 @@ export default firebase;
 
 ```jsx
 // ItemList.jsx
-import React, { useState, useEffect } from 'react';
-import firebase from '../firebase';
+import React, { useState, useEffect } from "react";
+import firebase from "../firebase";
 
-const ItemList = props => {
-
+const ItemList = (props) => {
   const [todoList, setTodoList] = useState(null);
 
   // firestoreから全データを取得してstateに格納する関数
   const getTodosFromFirestore = async () => {
-    const itemListArray = await firebase.firestore().collection('todos')
-      .orderBy('limit')
+    const itemListArray = await firebase
+      .firestore()
+      .collection("todos")
+      .orderBy("limit")
       .get();
-    const todoArray = itemListArray.docs.map(x => {
+    const todoArray = itemListArray.docs.map((x) => {
       return {
         id: x.id,
         data: x.data(),
-      }
-    })
+      };
+    });
     setTodoList(todoArray);
     return todoArray;
-  }
+  };
 
   // useEffectを利用してFirestoreからデータの一覧を取得．
   useEffect(() => {
     const result = getTodosFromFirestore();
-  }, [props])
+  }, [props]);
 
   return (
     <div>
       <ul>
-        {
-          todoList?.map((x, index) =>
-            <li key={index} id={x.id}>
-              <input type="checkbox" value={x.id} />
-              <button value={x.id}>delete</button>
-              <p>締め切り：{x.data.limit.seconds}</p>
-              <p>やること：{x.data.todo}</p>
-            </li>
-          )
-        }
+        {todoList?.map((x, index) => (
+          <li key={index} id={x.id}>
+            <input type="checkbox" value={x.id} />
+            <button value={x.id}>delete</button>
+            <p>締め切り：{x.data.limit.seconds}</p>
+            <p>やること：{x.data.todo}</p>
+          </li>
+        ))}
       </ul>
     </div>
   );
-}
+};
 export default ItemList;
 ```
 
 実行している処理は以下の通り．
+
 - `useState`と`useEffect`の準備．
-- Firestoreに保存されている全データを取得する関数を定義．
-- `useEffect`を用いて上記の関数を実行し，stateに保存．
+- Firestore に保存されている全データを取得する関数を定義．
+- `useEffect`を用いて上記の関数を実行し，state に保存．
 - 保存した配列データをレンダリング．
 
 【Point】
 
-- Firestore関連の関数（`get()`など）はPromiseを返すので，`async/await`を用いると見通しが良い．
-- 取得したFirestoreのデータはそのままだと扱いにくいので，`map()`関数を用いて必要なデータだけを抽出している．
+- Firestore 関連の関数（`get()`など）は Promise を返すので，`async/await`を用いると見通しが良い．
+- 取得した Firestore のデータはそのままだと扱いにくいので，`map()`関数を用いて必要なデータだけを抽出している．
 
 呼び出し元の`App.jsx`を以下のように編集し，`ItemList.jsx`を表示する．
 
 ```js
 // App.jsx
-import React from 'react';
-import ItemList from './components/ItemList';
+import React from "react";
+import ItemList from "./components/ItemList";
 
 const App = () => {
   return (
@@ -253,52 +254,56 @@ const App = () => {
       <ItemList />
     </div>
   );
-}
+};
 export default App;
 ```
 
-下記のように，事前準備で登録したデータが表示されればOK！
+下記のように，事前準備で登録したデータが表示されれば OK！
 
-（この時点では締め切り日時はtimestampの形式のままで問題ない．）
+（この時点では締め切り日時は timestamp の形式のままで問題ない．）
 
 ![メイン画面2](./images/mainview02.png)
 
-
 ## 登録フォームコンポーネントの実装
 
-続いて，Firestoreにデータを追加するコンポーネントを実装する．
+続いて，Firestore にデータを追加するコンポーネントを実装する．
 
 - `components`ディレクトリ内に`InputForm.jsx`を作成する．
 - `InputForm.jsx`に以下の内容を記述する．
 
 ```js
 // InputForm.jsx
-import React, { useState } from 'react';
-import firebase from '../firebase';
+import React, { useState } from "react";
+import firebase from "../firebase";
 
 const InputForm = ({ getTodosFromFirestore }) => {
-  const [todo, setTodo] = useState('');
-  const [limit, setLimit] = useState('');
+  const [todo, setTodo] = useState("");
+  const [limit, setLimit] = useState("");
 
   // Firestoreにデータを送信する関数
   const postDataToFirestore = async (collectionName, postData) => {
-    const addedData = await firebase.firestore().collection(collectionName).add(postData);
+    const addedData = await firebase
+      .firestore()
+      .collection(collectionName)
+      .add(postData);
     return addedData;
-  }
+  };
 
   // submitボタンクリック時の処理
   const submitData = async () => {
-    if (todo === '' || limit === '') { return false };
+    if (todo === "" || limit === "") {
+      return false;
+    }
     const postData = {
       todo: todo,
       limit: new Date(limit),
       isDone: false,
-    }
-    const addedData = await postDataToFirestore('todos', postData);
-    setTodo('');
-    setLimit('');
+    };
+    const addedData = await postDataToFirestore("todos", postData);
+    setTodo("");
+    setLimit("");
     getTodosFromFirestore();
-  }
+  };
 
   return (
     <form action="">
@@ -309,7 +314,7 @@ const InputForm = ({ getTodosFromFirestore }) => {
             type="text"
             id="todo"
             value={todo}
-            onChange={e => setTodo(e.target.value)}
+            onChange={(e) => setTodo(e.target.value)}
           />
         </li>
         <li>
@@ -318,19 +323,18 @@ const InputForm = ({ getTodosFromFirestore }) => {
             type="datetime-local"
             id="limit"
             value={limit}
-            onChange={e => setLimit(e.target.value)}
+            onChange={(e) => setLimit(e.target.value)}
           />
         </li>
         <li>
-          <button
-            type="button"
-            onClick={submitData}
-          >submit</button>
+          <button type="button" onClick={submitData}>
+            submit
+          </button>
         </li>
       </ul>
     </form>
-  )
-}
+  );
+};
 
 export default InputForm;
 ```
@@ -339,78 +343,73 @@ export default InputForm;
 
 ```jsx
 // ItemList.jsx
-import React, { useState, useEffect } from 'react';
-import firebase from '../firebase';
+import React, { useState, useEffect } from "react";
+import firebase from "../firebase";
 // ↓↓↓ 追加 ↓↓↓
-import InputForm from './InputForm';
+import InputForm from "./InputForm";
 
-const ItemList = props => {
-
+const ItemList = (props) => {
   // ...省略
 
   return (
     <div>
       {/* ↓↓↓ 追加 ↓↓↓ */}
-      <InputForm
-        getTodosFromFirestore={getTodosFromFirestore}
-      />
+      <InputForm getTodosFromFirestore={getTodosFromFirestore} />
       {/* 以下変更なし */}
       <ul>
-        {
-          todoList?.map((x, index) =>
-            <li key={index} id={x.id}>
-              <input type="checkbox" value={x.id} />
-              <button value={x.id}>delete</button>
-              <p>締め切り：{x.data.limit.seconds}</p>
-              <p>やること：{x.data.todo}</p>
-            </li>
-          )
-        }
+        {todoList?.map((x, index) => (
+          <li key={index} id={x.id}>
+            <input type="checkbox" value={x.id} />
+            <button value={x.id}>delete</button>
+            <p>締め切り：{x.data.limit.seconds}</p>
+            <p>やること：{x.data.todo}</p>
+          </li>
+        ))}
       </ul>
     </div>
   );
-}
+};
 export default ItemList;
 ```
 
 【Point】
-- formの各値を`onChange`を利用してstateに格納する．
+
+- form の各値を`onChange`を利用して state に格納する．
 - 一覧データ取得時と同様に`async / await`を用いてデータ登録を実行する．
 - （「やること」「締め切り」のどちらかが空欄の場合は実行しない）
 - データ登録終了後に`getTodosFromFirestore()`関数を実行して最新の一覧データを取得して画面を更新する．
 
-下記のように，登録フォームから追加したデータが一覧に表示されればOK！
+下記のように，登録フォームから追加したデータが一覧に表示されれば OK！
 
 ![メイン画面3](./images/mainview03.png)
 
-
-## todo表示用コンポーネントの切り出し
+## todo 表示用コンポーネントの切り出し
 
 一覧表示と新規データの登録を実装したので，更新の処理と削除の処理を実装する．
 
 しかし，一覧画面コンポーネント（`ItemList.jsx`）に表示内容をすべて記述している．
 
-todo一つ一つの表示は別コンポーネントとして定義したい．以下の要領でtodoを表示するコンポーネントを作成し，`ItemList.jsx`から呼び出すことにする．
+todo 一つ一つの表示は別コンポーネントとして定義したい．以下の要領で todo を表示するコンポーネントを作成し，`ItemList.jsx`から呼び出すことにする．
 
 - `components`ディレクトリ内に`Item.jsx`を作成する．
 - `Item.jsx`に以下の内容を記述する．
 
 ```js
 // Item.jsx
-import React from 'react';
+import React from "react";
 
 const Item = ({ index, todo, getTodosFromFirestore }) => {
   // timestamp形式のデータをいい感じの形式に変換する関数
-  const convertFromTimestampToDatetime = timestamp => {
+  const convertFromTimestampToDatetime = (timestamp) => {
     const _d = timestamp ? new Date(timestamp * 1000) : new Date();
     const Y = _d.getFullYear();
-    const m = (_d.getMonth() + 1).toString().padStart(2, '0');
-    const d = _d.getDate().toString().padStart(2, '0');
-    const H = _d.getHours().toString().padStart(2, '0');
-    const i = _d.getMinutes().toString().padStart(2, '0');
-    const s = _d.getSeconds().toString().padStart(2, '0');
+    const m = (_d.getMonth() + 1).toString().padStart(2, "0");
+    const d = _d.getDate().toString().padStart(2, "0");
+    const H = _d.getHours().toString().padStart(2, "0");
+    const i = _d.getMinutes().toString().padStart(2, "0");
+    const s = _d.getSeconds().toString().padStart(2, "0");
     return `${Y}/${m}/${d} ${H}:${i}:${s}`;
-  }
+  };
 
   return (
     <li key={index} id={todo.id}>
@@ -419,8 +418,8 @@ const Item = ({ index, todo, getTodosFromFirestore }) => {
       <p>締め切り：{convertFromTimestampToDatetime(todo.data.limit.seconds)}</p>
       <p>やること：{todo.data.todo}</p>
     </li>
-  )
-}
+  );
+};
 export default Item;
 ```
 
@@ -428,14 +427,13 @@ export default Item;
 
 ```js
 // Itemlist.jsx
-import React, { useState, useEffect } from 'react';
-import firebase from '../firebase';
-import InputForm from './InputForm';
+import React, { useState, useEffect } from "react";
+import firebase from "../firebase";
+import InputForm from "./InputForm";
 // ↓↓↓ 追加 ↓↓↓
-import Item from './Item';
+import Item from "./Item";
 
-const ItemList = props => {
-
+const ItemList = (props) => {
   // ...省略
 
   return (
@@ -443,8 +441,8 @@ const ItemList = props => {
       {/* ...省略 */}
       {/* ↓↓↓ 編集 ↓↓↓ */}
       <ul>
-        {
-          todoList?.map((x, index) =>
+        {todoList?.map(
+          (x, index) => (
             // ↓新しく作成した`Item.jsx`
             <Item
               key={index}
@@ -452,32 +450,31 @@ const ItemList = props => {
               index={index}
               getTodosFromFirestore={getTodosFromFirestore}
             />
-            // ↓直接記述したものは削除してOK．
-            // <li key={index} id={x.id}>
-            //   <input type="checkbox" value={x.id} />
-            //   <button value={x.id}>delete</button>
-            //   <p>締め切り：{x.data.limit.seconds}</p>
-            //   <p>やること：{x.data.todo}</p>
-            // </li>
           )
-        }
+          // ↓直接記述したものは削除してOK．
+          // <li key={index} id={x.id}>
+          //   <input type="checkbox" value={x.id} />
+          //   <button value={x.id}>delete</button>
+          //   <p>締め切り：{x.data.limit.seconds}</p>
+          //   <p>やること：{x.data.todo}</p>
+          // </li>
+        )}
       </ul>
     </div>
   );
-}
+};
 export default ItemList;
 ```
 
 【Point】
 
-- これまで`ItemList.jsx`に直接記述していたhtml要素を`Item.jsx`に記述し直した．
-- Firestoreから取得した配列データとインデックスを`Item.jsx`に渡し，同様に表示．
-- 締め切りをわかりやすくするため，timestampを日付形式に変換する関数を定義．
+- これまで`ItemList.jsx`に直接記述していた html 要素を`Item.jsx`に記述し直した．
+- Firestore から取得した配列データとインデックスを`Item.jsx`に渡し，同様に表示．
+- 締め切りをわかりやすくするため，timestamp を日付形式に変換する関数を定義．
 
-下記のように，日付時間の形式でデータが一覧表示されればOK！
+下記のように，日付時間の形式でデータが一覧表示されれば OK！
 
 ![メイン画面4](./images/mainview04.png)
-
 
 ## 更新処理 / 削除処理の実装
 
@@ -485,39 +482,40 @@ export default ItemList;
 
 - `Item.jsx`に各処理を追加する．
 - チェックボックスの状況に応じて完了 / 未完了を更新．
-- deleteボタンクリックでデータ削除．
+- delete ボタンクリックでデータ削除．
 
 ```js
 // Item.jsx
-import React from 'react';
+import React from "react";
 // ↓追加
-import firebase from '../firebase';
+import firebase from "../firebase";
 
 const Item = ({ index, todo, getTodosFromFirestore }) => {
-
   // ...省略
 
   // ↓追加 ドキュメントIDを指定してFirestoreのデータを更新する関数
   const updateDataOnFirestore = async (collectionName, documentId, isDone) => {
-    const updatedData = await firebase.firestore()
+    const updatedData = await firebase
+      .firestore()
       .collection(collectionName)
       .doc(documentId)
       .update({
         isDone: isDone ? false : true,
       });
     getTodosFromFirestore();
-    return
-  }
+    return;
+  };
 
   // ↓追加 ドキュメントIDを指定してFirestoreのデータを削除する関数
   const deleteDataOnFirestore = async (collectionName, documentId) => {
-    const removedData = await firebase.firestore()
+    const removedData = await firebase
+      .firestore()
       .collection(collectionName)
       .doc(documentId)
       .delete();
     getTodosFromFirestore();
-    return
-  }
+    return;
+  };
 
   return (
     <li key={index} id={todo.id}>
@@ -526,50 +524,53 @@ const Item = ({ index, todo, getTodosFromFirestore }) => {
         type="checkbox"
         value={todo.id}
         checked={todo.data.isDone}
-        onChange={e => updateDataOnFirestore('todos', todo.id, todo.data.isDone)}
+        onChange={(e) =>
+          updateDataOnFirestore("todos", todo.id, todo.data.isDone)
+        }
       />
       {/* ↓↓↓ 編集 ↓↓↓ */}
       <button
         value={todo.id}
-        onClick={e => deleteDataOnFirestore('todos', todo.id)}
-      >delete</button>
+        onClick={(e) => deleteDataOnFirestore("todos", todo.id)}
+      >
+        delete
+      </button>
       <p>締め切り：{convertFromTimestampToDatetime(todo.data.limit.seconds)}</p>
       <p>やること：{todo.data.todo}</p>
     </li>
-  )
-}
+  );
+};
 
 export default Item;
 ```
 
 【Point】
-- `update()`，`delete()`関数でFirestoreのデータを更新&削除する．
-- ドキュメントIDを指定することで，指定したドキュメントの操作が行える．
+
+- `update()`，`delete()`関数で Firestore のデータを更新&削除する．
+- ドキュメント ID を指定することで，指定したドキュメントの操作が行える．
 - `todo.data.isDone`の値（true / false）に応じてチェックボックスの`checked`が変更される．
 
-下記のように，チェックボックスクリックでisDoneがtrueに，deleteボタンクリックでデータ削除が実行されていればOK．firebaseのコンソールからデータを確認しよう！
+下記のように，チェックボックスクリックで isDone が true に，delete ボタンクリックでデータ削除が実行されていれば OK．firebase のコンソールからデータを確認しよう！
 
 ![メイン画面5](./images/mainview05.png)
 
 ![CloudFirestore画面02](./images/firestore02.png)
 
-
 ## 完了未完了でのデータ表示制御
 
-ここまでで一通りのCRUD処理は完成したが，チェックボックスの状態だけではわかりにくい．
+ここまでで一通りの CRUD 処理は完成したが，チェックボックスの状態だけではわかりにくい．
 
-そこで，完了済みのtodoは取り消し線を表示し，未完了todoの下に表示させるようにする．
+そこで，完了済みの todo は取り消し線を表示し，未完了 todo の下に表示させるようにする．
 
 - `Item.jsx`の表示部分を編集する．
-- isDoneの値によって取り消し線有無を変更．
+- isDone の値によって取り消し線有無を変更．
 
 ```js
 // Item.jsx
-import React from 'react';
-import firebase from '../firebase';
+import React from "react";
+import firebase from "../firebase";
 
 const Item = ({ index, todo, getTodosFromFirestore }) => {
-
   // ...省略
 
   return (
@@ -578,35 +579,49 @@ const Item = ({ index, todo, getTodosFromFirestore }) => {
         type="checkbox"
         value={todo.id}
         checked={todo.data.isDone}
-        onChange={e => updateDataOnFirestore('todos', todo.id, todo.data.isDone)}
+        onChange={(e) =>
+          updateDataOnFirestore("todos", todo.id, todo.data.isDone)
+        }
       />
       <button
         value={todo.id}
-        onClick={e => deleteDataOnFirestore('todos', todo.id)}
-      >delete</button>
+        onClick={(e) => deleteDataOnFirestore("todos", todo.id)}
+      >
+        delete
+      </button>
       {/* ↓↓↓ 編集 ↓↓↓ */}
-      {
-        !todo.data.isDone
-          ? <div>
-            <p>締め切り：{convertFromTimestampToDatetime(todo.data.limit.seconds)}</p>
-            <p>やること：{todo.data.todo}</p>
-          </div>
-          : <div>
-            <p><del>締め切り：{convertFromTimestampToDatetime(todo.data.limit.seconds)}</del></p>
-            <p><del>やること：{todo.data.todo}</del></p>
-          </div>
-      }
+      {!todo.data.isDone ? (
+        <div>
+          <p>
+            締め切り：{convertFromTimestampToDatetime(todo.data.limit.seconds)}
+          </p>
+          <p>やること：{todo.data.todo}</p>
+        </div>
+      ) : (
+        <div>
+          <p>
+            <del>
+              締め切り：
+              {convertFromTimestampToDatetime(todo.data.limit.seconds)}
+            </del>
+          </p>
+          <p>
+            <del>やること：{todo.data.todo}</del>
+          </p>
+        </div>
+      )}
     </li>
-  )
-}
+  );
+};
 
 export default Item;
 ```
 
 【Point】
+
 - `todo.data.isDone`の値によって取り消し線の有無を出し分ける．
 
-ブラウザで確認し，チェック済みのtodoが取り消し線表示になっていればOK．
+ブラウザで確認し，チェック済みの todo が取り消し線表示になっていれば OK．
 
 ![メイン画面6](./images/mainview06.png)
 
@@ -618,28 +633,29 @@ export default Item;
 ```js
 // ItemList.jsx
 
-  // ...省略
+// ...省略
 
-  // firestoreから全データを取得してstateに格納する関数
-  const getTodosFromFirestore = async () => {
-    const itemListArray = await firebase.firestore().collection('todos')
-      // ↓追加
-      .orderBy('isDone')
-      // ↓以降変更なし
-      .orderBy('limit')
-      .get();
-    const todoArray = itemListArray.docs.map(x => {
-      return {
-        id: x.id,
-        data: x.data(),
-      }
-    })
-    setTodoList(todoArray);
-    return todoArray;
-  }
+// firestoreから全データを取得してstateに格納する関数
+const getTodosFromFirestore = async () => {
+  const itemListArray = await firebase
+    .firestore()
+    .collection("todos")
+    // ↓追加
+    .orderBy("isDone")
+    // ↓以降変更なし
+    .orderBy("limit")
+    .get();
+  const todoArray = itemListArray.docs.map((x) => {
+    return {
+      id: x.id,
+      data: x.data(),
+    };
+  });
+  setTodoList(todoArray);
+  return todoArray;
+};
 
-  // ...省略
-
+// ...省略
 ```
 
 このままだと検証画面でエラーになる．
@@ -655,17 +671,18 @@ export default Item;
 ![CloudFirestore画面03](./images/firestore03.png)
 
 【Point】
-- Firestoreの仕様上，複数のフィールドを用いてクエリ（`.orderBy()`，`.where()`など）を発行することはできない．
+
+- Firestore の仕様上，複数のフィールドを用いてクエリ（`.orderBy()`，`.where()`など）を発行することはできない．
 - この場合，「インデックス」を作成することで上記振る舞いを実現することができる．
 - 現在では，エラーメッセージから直接インデックス作成画面にリンクされるため，検証画面を確認してリンク先で作成すれば良い．便利．
 
-完了済みtodoが未完了todoのあとに表示され，取り消し線になっていればOK．
+完了済み todo が未完了 todo のあとに表示され，取り消し線になっていれば OK．
 
 ![メイン画面7](./images/mainview07.png)
 
-
 ## やってみよう！！
-- Firebaseを利用したReactアプリケーションを実装しよう！！
-- オンライン事前講座で扱ったAPIなどと組み合わせると尚良し！！
+
+- Firebase を利用した React アプリケーションを実装しよう！！
+- オンライン事前講座で扱った API などと組み合わせると尚良し！！
 
 今回はここまで( `･ω･)b
