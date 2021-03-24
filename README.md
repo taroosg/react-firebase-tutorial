@@ -2,7 +2,7 @@
 
 作成日：2020/05/20
 
-更新日：2020/08/27
+更新日：2021/03/24
 
 ## 今回の講座のゴール
 
@@ -110,7 +110,7 @@ export default App;
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import * as serviceWorker from "./serviceWorker";
+import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -119,7 +119,7 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-serviceWorker.unregister();
+reportWebVitals();
 ```
 
 以下のコマンドで開発サーバを起動する．
@@ -185,7 +185,7 @@ export default firebase;
 import React, { useState, useEffect } from "react";
 import firebase from "../firebase";
 
-const ItemList = (props) => {
+export const ItemList = (props) => {
   const [todoList, setTodoList] = useState(null);
 
   // firestoreから全データを取得してstateに格納する関数
@@ -225,7 +225,6 @@ const ItemList = (props) => {
     </div>
   );
 };
-export default ItemList;
 ```
 
 実行している処理は以下の通り．
@@ -245,7 +244,7 @@ export default ItemList;
 ```js
 // App.jsx
 import React from "react";
-import ItemList from "./components/ItemList";
+import { ItemList } from "./components/ItemList";
 
 const App = () => {
   return (
@@ -276,7 +275,7 @@ export default App;
 import React, { useState } from "react";
 import firebase from "../firebase";
 
-const InputForm = ({ getTodosFromFirestore }) => {
+export const InputForm = ({ getTodosFromFirestore }) => {
   const [todo, setTodo] = useState("");
   const [limit, setLimit] = useState("");
 
@@ -335,8 +334,6 @@ const InputForm = ({ getTodosFromFirestore }) => {
     </form>
   );
 };
-
-export default InputForm;
 ```
 
 また，呼び出し元の`ItemList.jsx`を以下のように編集する．
@@ -346,9 +343,9 @@ export default InputForm;
 import React, { useState, useEffect } from "react";
 import firebase from "../firebase";
 // ↓↓↓ 追加 ↓↓↓
-import InputForm from "./InputForm";
+import { InputForm } from "./InputForm";
 
-const ItemList = (props) => {
+export const ItemList = (props) => {
   // ...省略
 
   return (
@@ -369,7 +366,6 @@ const ItemList = (props) => {
     </div>
   );
 };
-export default ItemList;
 ```
 
 【Point】
@@ -398,7 +394,7 @@ todo 一つ一つの表示は別コンポーネントとして定義したい．
 // Item.jsx
 import React from "react";
 
-const Item = ({ index, todo, getTodosFromFirestore }) => {
+export const Item = ({ index, todo, getTodosFromFirestore }) => {
   // timestamp形式のデータをいい感じの形式に変換する関数
   const convertFromTimestampToDatetime = (timestamp) => {
     const _d = timestamp ? new Date(timestamp * 1000) : new Date();
@@ -420,7 +416,6 @@ const Item = ({ index, todo, getTodosFromFirestore }) => {
     </li>
   );
 };
-export default Item;
 ```
 
 また，呼び出し元の`Itemlist.jsx`を以下のように編集する．
@@ -429,11 +424,11 @@ export default Item;
 // Itemlist.jsx
 import React, { useState, useEffect } from "react";
 import firebase from "../firebase";
-import InputForm from "./InputForm";
+import { InputForm } from "./InputForm";
 // ↓↓↓ 追加 ↓↓↓
-import Item from "./Item";
+import { Item } from "./Item";
 
-const ItemList = (props) => {
+export const ItemList = (props) => {
   // ...省略
 
   return (
@@ -463,7 +458,6 @@ const ItemList = (props) => {
     </div>
   );
 };
-export default ItemList;
 ```
 
 【Point】
@@ -490,7 +484,7 @@ import React from "react";
 // ↓追加
 import firebase from "../firebase";
 
-const Item = ({ index, todo, getTodosFromFirestore }) => {
+export const Item = ({ index, todo, getTodosFromFirestore }) => {
   // ...省略
 
   // ↓追加 ドキュメントIDを指定してFirestoreのデータを更新する関数
@@ -540,8 +534,6 @@ const Item = ({ index, todo, getTodosFromFirestore }) => {
     </li>
   );
 };
-
-export default Item;
 ```
 
 【Point】
@@ -570,7 +562,7 @@ export default Item;
 import React from "react";
 import firebase from "../firebase";
 
-const Item = ({ index, todo, getTodosFromFirestore }) => {
+export const Item = ({ index, todo, getTodosFromFirestore }) => {
   // ...省略
 
   return (
@@ -613,8 +605,6 @@ const Item = ({ index, todo, getTodosFromFirestore }) => {
     </li>
   );
 };
-
-export default Item;
 ```
 
 【Point】
